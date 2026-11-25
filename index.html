@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>한눈에 알아보는 간식 정보</title>
+  <style>
+    :root{font-family:system-ui,sans-serif;color:#172b3a;background:#f3f7fa;font-size:18px}
+    *{box-sizing:border-box}body{margin:0}main{max-width:820px;margin:auto;padding:32px 18px 70px}
+    h1{font-size:2rem;margin:0 0 8px}h2{font-size:1.35rem;margin:0 0 14px}p{line-height:1.5}
+    .muted{color:#4c6270}.box{background:white;border:1px solid #d8e4eb;border-radius:18px;padding:24px;margin:20px 0;box-shadow:0 5px 20px #24445a0a}
+    form{display:flex;gap:10px}input,button{font:inherit;border-radius:10px;padding:13px 15px}input{min-width:0;border:2px solid #9bb2c0;flex:1}
+    button{border:0;background:#126489;color:white;cursor:pointer;font-weight:700}button:hover{background:#0a4e6c}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #f1a300;outline-offset:3px}
+    .results{display:grid;gap:10px}.choice{width:100%;text-align:left;background:#e8f4fa;color:#172b3a;display:flex;justify-content:space-between;align-items:center;gap:12px}.choice:hover{background:#d4eaf5}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{border-radius:14px;padding:18px;background:#edf5fc}.metric strong{display:block;font-size:1.6rem;margin:9px 0}.metric em{font-style:normal;font-weight:700}
+    .high{background:#ffe5e3;color:#8b1a16}.medium{background:#fff0c9;color:#6f4c00}.low{background:#dcefff;color:#064e7c}.unknown{background:#eef1f3;color:#40515d}
+    .fair-status{border-radius:14px;padding:16px 18px;margin:0 0 20px;font-size:1.2rem;font-weight:800}.fair-yes{background:#dff4e7;color:#145c34;border:2px solid #6bb88b}.fair-no{background:#fff0d5;color:#765000;border:2px solid #e9bf68}.fair-tag{font-size:.85rem;font-weight:800;white-space:nowrap;padding:5px 9px;border-radius:8px}.choice .fair-yes,.choice .fair-no{border-width:1px}
+    .age{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.age label{font-weight:600}.age input,.age select{display:block;margin-top:6px;font:inherit;padding:12px;border:2px solid #9bb2c0;border-radius:10px;background:white}
+    small{font-size:.85rem;line-height:1.5}a{color:#075b84}summary{cursor:pointer;font-weight:700}#status{min-height:1.5em}
+    @media(max-width:650px){form,.grid{display:block}form button{width:100%;margin-top:10px}.metric{margin-top:10px}.choice{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <h1>한눈에 알아보는 간식 정보</h1>
+  <p class="muted">제품명으로 열량·당류·카페인과 공정무역 마크 유무를 살펴보세요.</p>
+  <p><strong>가상 데이터 체험용:</strong> 100개 제품의 이름과 수치는 모두 예시이며 실제 판매 제품이나 인증 정보가 아닙니다.</p>
+
+  <section class="box" aria-label="제품 검색">
+    <form id="searchForm">
+      <input id="query" aria-label="제품 이름" placeholder="예: 딸기, 초코바, 커피" required>
+      <button>검색</button>
+    </form>
+    <p id="status" role="status"></p>
+    <div id="results" class="results"></div>
+  </section>
+
+  <section id="detail" class="box" hidden aria-live="polite"></section>
+
+  <section class="box" aria-label="나이 선택">
+    <h2>나이 선택</h2>
+    <div class="age">
+      <label>연령대<select id="age"><option value="adult">성인 (19세 이상)</option><option value="young">어린이·청소년 (18세 이하)</option></select></label>
+      <label id="weightLabel" hidden>체중 (kg)<input id="weight" type="number" min="1" max="300" placeholder="예: 50"></label>
+    </div>
+    <p class="muted" id="referenceNote"></p>
+  </section>
+
+  <details class="box">
+    <summary>공정무역이란?</summary>
+    <p>공정무역은 생산자에게 더 공정한 거래 조건을 제공하고, 노동자의 권리와 지속 가능한 생산을 지원하려는 방식입니다. 실제 인증 여부는 제품 포장과 인증 기관 정보를 함께 확인하세요.</p>
+  </details>
+  <details class="box">
+    <summary>윤리적 소비가 중요한 이유</summary>
+    <p>우리가 무엇을 사는지는 생산 과정에도 영향을 줍니다. 노동자의 권리와 안전, 환경을 고려해 만든 제품을 살펴보는 것은 더 책임 있는 생산을 응원하는 방법입니다. 공정무역 마크를 확인하고 필요한 만큼 구매하는 작은 선택부터 시작할 수 있습니다.</p>
+  </details>
+  <small class="muted">제품 정보와 공정무역 표시는 가상 예시입니다.<br>비교 기준 출처: <a href="https://impfood.mfds.go.kr/CFBBB02F02/getCntntsDetail?cntntsSn=282128" target="_blank" rel="noopener">식약처 당류 영양표시 기준</a> · <a href="https://mfds.go.kr/brd/m_227/view.do?seq=27563" target="_blank" rel="noopener">식약처 카페인 섭취 권고량</a> · <a href="https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6763" target="_blank" rel="noopener">질병관리청 영양표시 안내</a></small>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+let selected;
+const flavors = ['딸기','바나나','사과','포도','복숭아','레몬','초코','녹차','바닐라','카라멜'];
+const kinds = [
+  ['초코바',420,42,5],['쿠키',310,26,0],['젤리',160,48,0],
+  ['크래커',220,8,0],['시리얼바',260,28,0],['아이스크림',370,45,0],
+  ['요거트',180,18,0],['주스',150,42,0],['탄산음료',190,58,0],['커피',290,36,220]
+];
+const products = kinds.flatMap(([kind,kcal,sugar,caffeine], i) => flavors.map((flavor, j) => ({
+  name:`가상 ${flavor} ${kind}`,
+  kcal:kcal + j * 4,
+  sugar:sugar + j % 5,
+  caffeine:caffeine + (flavor === '녹차' ? 15 : 0),
+  fair:(i + j) % 7 === 0
+})));
+const references = () => $('age').value === 'adult' ? [2000,100,400] : [null,null,Number($('weight').value) > 0 ? Number($('weight').value) * 2.5 : null];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function metric(label, value, unit, limit) {
+  if (value === null) return `<div class="metric unknown"><span>${label}</span><strong>정보 없음</strong><em>판정 불가</em></div>`;
+  const amount = `<span>${label}</span><strong>${value.toLocaleString('ko-KR',{maximumFractionDigits:1})} ${unit}</strong>`;
+  if (limit === null) return `<div class="metric unknown">${amount}<em>연령별 기준 적용 불가</em></div>`;
+  const ratio = value / limit;
+  const [color, word] = ratio >= .5 ? ['high','50% 이상'] : ratio >= .2 ? ['medium','20~49%'] : ['low','20% 미만'];
+  return `<div class="metric ${color}">${amount}<em>하루 기준 ${word}</em></div>`;
+}
+
+function show(product) {
+  selected = product;
+  const [cal,sugar,caf] = references();
+  $('detail').innerHTML = `<div class="fair-status ${product.fair ? 'fair-yes' : 'fair-no'}" role="status">${product.fair ? '✓ 공정무역 마크 있음' : '— 공정무역 마크 없음'} <small>(가상 예시)</small></div>
+    <h2>${esc(product.name)}</h2>
+    <p class="muted">가상 예시 · 제품 1개당 수치로 가정</p>
+    <div class="grid">
+      ${metric('열량',product.kcal,'kcal',cal)}
+      ${metric('당류',product.sugar,'g',sugar)}
+      ${metric('카페인',product.caffeine,'mg',caf)}
+    </div>
+    <p class="muted"><small>색상은 하루 참고치 대비 비율입니다: 빨강 50% 이상, 노랑 20~49%, 파랑 20% 미만.</small></p>
+    <p class="muted"><small>실제 구매 시에는 제품 포장과 인증 정보를 확인하세요.</small></p>`;
+  $('detail').hidden = false;
+}
+
+function search(query) {
+  const term = query.replace(/\s+/g,'').toLowerCase();
+  const found = products.filter(p => p.name.replace(/\s+/g,'').toLowerCase().includes(term));
+  $('results').replaceChildren();
+  $('detail').hidden = true;
+  $('status').textContent = !term ? '가상 제품 100개가 준비되었습니다. 제품명 일부를 입력해 검색하세요.' : found.length ? `검색 결과 ${found.length}개 중 최대 5개를 보여 줍니다. 제품을 선택하세요.` : '일치하는 가상 제품이 없습니다. 딸기, 커피, 주스 등을 검색해 보세요.';
+  if (!term) return;
+  found.slice(0,5).forEach(p => {
+    const button = document.createElement('button');
+    button.className = 'choice';
+    button.innerHTML = `<span>${esc(p.name)}</span><span class="fair-tag ${p.fair ? 'fair-yes' : 'fair-no'}">공정무역 ${p.fair ? '있음' : '없음'} (가상)</span>`;
+    button.onclick = () => show(p);
+    $('results').append(button);
+  });
+}
+$('searchForm').addEventListener('submit', event => {
+  event.preventDefault();
+  search($('query').value.trim());
+});
+function updateAge() {
+  const young = $('age').value === 'young';
+  $('weightLabel').hidden = !young;
+  $('referenceNote').textContent = young
+    ? '어린이·청소년의 카페인 권고량은 체중 1kg당 하루 2.5mg입니다. 체중을 입력하면 계산합니다. 열량·당류는 나이만으로 공식 개인 기준을 정할 수 없어 수치만 보여 줍니다.'
+    : '열량 2,000kcal·당류 100g은 성인 영양표시용 하루 참고치, 카페인 400mg은 성인 하루 최대 섭취 권고량입니다. 임신 중에는 카페인 기준이 다릅니다.';
+  if (selected) show(selected);
+}
+$('age').addEventListener('change', updateAge);
+$('weight').addEventListener('input', updateAge);
+updateAge();
+search('');
+</script>
+</body>
+</html>
